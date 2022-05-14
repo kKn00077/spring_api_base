@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.moreturn.hwizza.post.mapper.PostMapper">
+
+
+    <insert id="insertPost" 
+            useGeneratedKeys="true" 
+            keyProperty="post_no" keyColumn="POST_NO"
+            parameterType="PostVO">
+        INSERT INTO POST(USER_NO, TXT, LIKE_CNT, REVIEW_CNT, REG_DT)
+        VALUES (#{user_no}, #{txt}, 0, 0, NOW())
+    </insert>
+
+
+    <insert id="insertPostStockList">
+        INSERT INTO POST_STOCK
+        VALUES
+        <foreach item="item" index="index" collection="list"
+        separator=",">
+            (#{item.post_no}, #{item.stock_cd}, NOW())
+        </foreach>
+    </insert>
+
+
+
+    <update id="updatePostCntInUser" parameterType="UserVO">
+        UPDATE USER
+        SET POST_CNT=IF(ISNULL(POST_CNT), 1, POST_CNT+1)
+        WHERE USER_NO = #{user_no}
+    </update>
+
+
+
+    <delete id="deletePost">
+          
+    </delete>
+
+
+    <insert id="insertPostReview" parameterType="PostReviewVO">
+        INSERT INTO REVIEW(USER_NO, POST_NO, TXT, REREVIEW_CNT, REG_DT)
+        VALUES (#{user_no}, #{post_no}, #{txt}, 0, NOW())
+    </insert>
+
+
+
+    <update id="updatePostReviewCnt" parameterType="PostReviewVO">
+        UPDATE POST
+        SET REVIEW_CNT=REVIEW_CNT + 1
+        WHERE POST_NO = #{post_no}
+    </update>
+
+
+
+    <insert id="insertPostReReview" parameterType="PostReReviewVO">
+        INSERT INTO REREVIEW(USER_NO, REVIEW_NO, TXT, REG_DT)
+        VALUES (#{user_no}, #{review_no}, #{txt}, NOW())
+    </insert>
+
+
+
+    <update id="updatePostReReviewCnt" parameterType="PostReReviewVO">
+        UPDATE REVIEW
+        SET REREVIEW_CNT=REREVIEW_CNT + 1
+        WHERE REVIEW_NO = #{review_no}
+    </update>
+
+
+
+    <select id="selectReviewListOfPostNo" parameterType="int" resultType="HashMap">
+        SELECT R.*, U.NICK_NM AS nick_nm FROM REVIEW R
+        LEFT JOIN USER U # 유저가 탈퇴해도 댓글 리스트는 그대로
+        ON R.USER_NO = U.USER_NO
+        WHERE R.POST_NO = #{post_no}
+    </select>
+
+
+
+    <select id="selectReReviewListOfReviewNo" parameterType="int" resultType="HashMap">
+        SELECT RR.*, U.NICK_NM AS nick_nm FROM REREVIEW RR
+        LEFT JOIN USER U
+        ON RR.USER_NO = U.USER_NO
+        WHERE RR.REVIEW_NO = #{review_no}
+    </select>
+
+
+
+    <insert id="insertReviewLike" parameterType="PostReviewLikeVO">
+        # 해당 유저가 댓글에 이미 좋아요를 눌렀을 경우 INSERT를 하지 않도록 쿼리문 작성함.
+        INSERT INTO REVIEW_LIKE (USER_NO, REVIEW_NO, REG_DT)
+        SELECT #{user_no}, #{review_no}, NOW() FROM DUAL
+        WHERE NOT EXISTS (
+            SELECT USER_NO, REVIEW_NO
+            FROM REVIEW_LIKE
+            WHERE USER_NO = #{user_no}
+            AND REVIEW_NO = #{review_no}
+        ) LIMIT 1
+    </insert>
+
+
+
+    <insert id="insertReReviewLike" parameterType="PostReReviewLikeVO">
+        INSERT INTO REREVIEW_LIKE (USER_NO, REREVIEW_NO, REG_DT)
+        SELECT #{user_no}, #{rereview_no}, NOW() FROM DUAL
+        WHERE NOT EXISTS (
+            SELECT USER_NO, REREVIEW_NO
+            FROM REREVIEW_LIKE
+            WHERE USER_NO = #{user_no}
+            AND REREVIEW_NO = #{rereview_no}
+        ) LIMIT 1
+    </insert>
+
+
+
+    <update id="updateReviewLikeCnt" parameterType="PostReviewLikeVO">
+        UPDATE REVIEW
+        SET LIKE_CNT=IF(ISNULL(LIKE_CNT), 1, LIKE_CNT+1)
+        WHERE REVIEW_NO = #{review_no}
+    </update>
+
+
+
+    <update id="updateReReviewLikeCnt" parameterType="PostReReviewLikeVO">
+        UPDATE REREVIEW
+        SET LIKE_CNT=IF(ISNULL(LIKE_CNT), 1, LIKE_CNT+1)
+        WHERE REREVIEW_NO = #{rereview_no}
+    </update>
+
+
+
+</mapper>

@@ -1,0 +1,23 @@
+server:
+  error:
+    include-exception: false      # Response 에 Exception 을 표시할지
+    include-message: ALWAYS       # Response 에 Exception Message 를 표시할지 (never | always | on_param)
+    include-stacktrace: ON_PARAM  # Response 에 Stack Trace 를 표시할지 (never | always | on_param)
+    whitelabel.enabled: false      # 에러 발생 시 Spring 기본 에러 페이지 노출 여부 
+
+spring:
+  # Mybatis DataSource 연동
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://morturn-app.cmovvmr1gj0s.ap-northeast-2.rds.amazonaws.com:3306/morturn?characterEncoding=UTF-8&useTimezone=true&serverTimezone=Asia/Seoul
+    username: morturn
+    password: 88g4kCgTyHD?xdxv
+   
+
+mybatis: # type을 쉽게 쓰기 위해서 dto 패키지를 type-aliaes에 설정
+  type-aliases-package: kr.co.moreturn.hwizza.user.vo;kr.co.moreturn.hwizza.post.vo
+  mapper-locations: /mapper/**/*.xml
+  
+api: 
+  jwt: 
+    secret-key: pdLors59zrXN5YGHtj6T5sXyh5fnkDkmH5yrD5dz

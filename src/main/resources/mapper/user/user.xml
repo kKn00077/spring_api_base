@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.moreturn.hwizza.user.mapper.UserMapper">
+
+
+    <insert id="insertUser" parameterType="UserVO">
+        INSERT INTO USER (NICK_NM, PWD, PHONE_NO, REG_DT)
+        VALUES (#{nick_nm}, #{pwd}, #{phone_no}, NOW())
+    </insert>
+
+
+    <select id="selectUserOfNickNm" parameterType="string" resultType="UserVO">
+        SELECT * FROM USER
+        WHERE NICK_NM=#{nick_nm}
+    </select>
+
+
+    <select id="selectUserOfLogin" parameterType="UserVO" resultType="UserVO">
+        SELECT * FROM USER
+        WHERE 
+            NICK_NM=#{nick_nm} AND
+            PHONE_NO=#{phone_no}
+    </select>
+
+
+    <select id="selectUserListOfPhoneNo" parameterType="UserVO" resultType="UserVO">
+        SELECT * FROM USER
+        WHERE
+            PHONE_NO=#{phone_no}
+    </select>
+
+
+
+    <select id="selectUserOfUserNo" parameterType="UserVO" resultType="UserVO">
+        SELECT * FROM USER
+        WHERE
+            USER_NO=#{user_no}
+    </select>
+
+</mapper>

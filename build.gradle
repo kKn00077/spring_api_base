@@ -1,0 +1,58 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'kr.co.moreturn'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	// Spring Boot 의존성 설정 (버전 자동 관리)
+	implementation 'org.springframework.boot:spring-boot-starter-parent:2.5.4'
+
+	// Spring Boot Web 관련 설정
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Spring Boot를 이용한 암호화 설정
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	
+	// mybatis 사용을 위한 DB 설정
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	
+	// aop / transaction 처리를 위한 설정
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+	
+	// jwt 설정
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	
+	implementation "javax.xml.bind:jaxb-api"
+	
+	// lombok 설정
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	
+	// test 설정
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+}
+
+test {
+	useJUnitPlatform()
+}
